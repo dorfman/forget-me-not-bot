@@ -1,30 +1,77 @@
 import axios from 'axios';
 import {useState} from 'react';
 
+const STEPS = {
+  SIGNUP: 0,
+  VERIFY: 1,
+  SIGNEDUP: 2,
+};
+
 function HomePage() {
+  const [step, setStep] = useState(STEPS.SIGNUP);
   const [number, setNumber] = useState('');
+  const [code, setCode] = useState('');
+  let onboarding = null;
+
+  switch (step) {
+    case STEPS.SIGNUP: {
+      onboarding = (
+        <form
+          method="POST"
+          action="/api/signup"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const res = axios.post('/api/signup', {number});
+            setStep(STEPS.VERIFY);
+          }}
+        >
+          <label for="phonenumber">Where can we remind you?</label>
+          <input
+            placeholder="212-424-4242"
+            onChange={(e) => { setNumber(e.target.value); }}
+            value={number}
+            id="phonenumber"
+            type="tel"
+            name="phonenumber"
+          />
+          <button type="submit">Remind me</button>
+        </form>
+      );
+      break;
+    }
+    case STEPS.VERIFY: {
+      onboarding = (
+        <form
+          method="POST"
+          action="/api/verify"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const res = axios.post('/api/verify', {code});
+            setStep(STEPS.VERIFY);
+          }}
+        >
+          <label for="code">Code</label>
+          <input
+            onChange={(e) => { setCode(e.target.value); }}
+            value={code}
+            id="code"
+            type="text"
+            name="code"
+          />
+          <button type="submit">Remind me</button>
+        </form>
+      );
+      break;
+    }
+    case STEPS.SIGNEDUP: {
+      break;
+    }
+  }
 
   return (
     <div>
-      <h1>hello</h1>
-      <form
-        method="POST"
-        action="/api/signup"
-        onSubmit={(e) => {
-          e.preventDefault();
-          axios.post('/api/signup', {number});
-        }}
-      >
-        <label for="number">Phone number</label>
-        <input
-          onChange={(e) => { setNumber(e.target.value); }}
-          value={number}
-          id="number"
-          type="tel"
-          name="number"
-        />
-        <button type="submit">Remind me</button>
-      </form>
+      <h1>Forget Me Not Bot</h1>
+      {onboarding}
     </div>
   );
 }
