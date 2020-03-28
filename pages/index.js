@@ -47,7 +47,7 @@ function HomePage() {
           onSubmit={async (e) => {
             e.preventDefault();
             const res = axios.post('/api/verify', {code});
-            setStep(STEPS.VERIFY);
+            setStep(STEPS.SIGNEDUP);
           }}
         >
           <label for="code">Code</label>
@@ -64,6 +64,13 @@ function HomePage() {
       break;
     }
     case STEPS.SIGNEDUP: {
+      onboarding = (
+        <form method="POST" action="/api/friends">
+          <label>Who do you want to remember?</label>
+          <textarea />
+          <button type="submit">Remember</button>
+        </form>
+      );
       break;
     }
   }
