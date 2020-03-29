@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
 
+import { Label } from '../components/label';
+import { Input } from '../components/input';
+import { Button } from '../components/button';
+
 const STEPS = {
   SIGNUP: 0,
   VERIFY: 1,
@@ -25,8 +29,8 @@ function HomePage() {
             setStep(STEPS.VERIFY);
           }}
         >
-          <label for="phonenumber">Where can we remind you?</label>
-          <input
+          <Label htmlFor="phonenumber">Where can we remind you?</Label>
+          <Input
             placeholder="212-424-4242"
             onChange={(e) => {
               setNumber(e.target.value);
@@ -36,7 +40,7 @@ function HomePage() {
             type="tel"
             name="phonenumber"
           />
-          <button type="submit">Remind me</button>
+          <Button type="submit">Remind me</Button>
         </form>
       );
       break;
@@ -52,8 +56,8 @@ function HomePage() {
             setStep(STEPS.SIGNEDUP);
           }}
         >
-          <label for="code">Code</label>
-          <input
+          <Label for="code">Please type in the 4-digit code we sent you.</Label>
+          <Input
             onChange={(e) => {
               setCode(e.target.value);
             }}
@@ -62,7 +66,7 @@ function HomePage() {
             type="text"
             name="code"
           />
-          <button type="submit">Remind me</button>
+          <Button type="submit">Verify</Button>
         </form>
       );
       break;
@@ -70,9 +74,12 @@ function HomePage() {
     case STEPS.SIGNEDUP: {
       onboarding = (
         <form method="POST" action="/api/friends">
-          <label>Who do you want to remember?</label>
-          <textarea />
-          <button type="submit">Remember</button>
+          <Label>Who do you want to remember?</Label>
+          <textarea
+            placeholder={'Jane Doe\nYefim Vedernikoff'}
+            className="block w-1/2 border border-black mb-4"
+          />
+          <Button type="submit">Remember</Button>
         </form>
       );
       break;
@@ -80,10 +87,21 @@ function HomePage() {
   }
 
   return (
-    <div>
-      <h1>Forget Me Not Bot</h1>
-      {onboarding}
-    </div>
+    <main className="max-w-6xl mx-auto p-8">
+      <header className="flex justify-between items-center">
+        <h1 className="text-5xl">Forget Me Not Bot</h1>
+        <nav>
+          <span className="mr-4 text-xl">About</span>
+          <span className="text-xl">Log in</span>
+        </nav>
+      </header>
+      <section>
+        <h2 className="text-center text-3xl py-40">Gentle reminders to reach out to your friends.</h2>
+      </section>
+      <section>
+        {onboarding}
+      </section>
+    </main>
   );
 }
 
