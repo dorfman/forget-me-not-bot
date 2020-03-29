@@ -24,7 +24,7 @@ function HomePage() {
           action="/api/signup"
           onSubmit={async (e) => {
             e.preventDefault();
-            const res = axios.post('/api/signup', { number });
+            // const res = await axios.post('/api/signup', { number });
             setStep(STEPS.VERIFY);
           }}
         >
@@ -52,13 +52,13 @@ function HomePage() {
           action="/api/verify"
           onSubmit={async (e) => {
             e.preventDefault();
-            const res = axios.post('/api/verify', { code });
+            const res = await axios.post('/api/verify', { code });
             setStep(STEPS.SIGNEDUP);
           }}
         >
           <Label htmlFor="code">Please type in the 4-digit code we sent you.</Label>
           <input
-            className="block border-b border-black border-solid text-xl mb-4 w-40"
+            className="block border-b border-black border-solid text-xl mb-4 w-20 text-center"
             placeholder="0000"
             onChange={(e) => {
               setCode(e.target.value);
@@ -80,7 +80,7 @@ function HomePage() {
           <textarea
             name="friends"
             placeholder={'Jane Doe\nYefim Vedernikoff'}
-            className="block w-1/2 border border-black mb-4"
+            className="block w-1/2 border text-md border-black mb-4 h-24"
           />
           <Button type="submit">Remember</Button>
         </form>
