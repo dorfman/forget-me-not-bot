@@ -6,7 +6,14 @@ export default async (req, res) => {
     req.body.verification_code = 'soft';
 
     // insert into DB here
-    res.json(await User.create(req.body));
+    User.create(req.body)
+      .then((response) => res.json(response))
+      .catch((err) =>
+        res.status(409).json({
+          httpCode: 409,
+          message: 'User with this phone already exists',
+        })
+      );
 
     // send verification text (twilio api call)
   } else {
