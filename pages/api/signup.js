@@ -8,7 +8,12 @@ export default async (req, res) => {
     // insert into DB here
     User.create(req.body)
       .then((response) => res.json(response))
-      .catch((err) => res.status(409).end());
+      .catch((err) =>
+        res.status(409).json({
+          httpCode: 409,
+          message: 'User with this phone already exists',
+        })
+      );
 
     // send verification text (twilio api call)
   } else {
