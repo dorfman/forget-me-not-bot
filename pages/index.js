@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useState } from 'react';
 
 import { Label } from '../components/label';
-import { Input } from '../components/input';
 import { Button } from '../components/button';
 
 const STEPS = {
@@ -30,7 +29,8 @@ function HomePage() {
           }}
         >
           <Label htmlFor="phonenumber">Where can we remind you?</Label>
-          <Input
+          <input
+            className="block border-b border-black border-solid text-xl mb-4 w-40"
             placeholder="212-424-4242"
             onChange={(e) => {
               setNumber(e.target.value);
@@ -57,7 +57,9 @@ function HomePage() {
           }}
         >
           <Label htmlFor="code">Please type in the 4-digit code we sent you.</Label>
-          <Input
+          <input
+            className="block border-b border-black border-solid text-xl mb-4 w-40"
+            placeholder="0000"
             onChange={(e) => {
               setCode(e.target.value);
             }}
