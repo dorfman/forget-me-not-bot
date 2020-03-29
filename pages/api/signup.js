@@ -1,13 +1,15 @@
-export default (req, res) => {
+const { User } = require('../../models');
+
+export default async (req, res) => {
   if (req.method === 'POST') {
-    console.log(req.body && req.body.number);
+    // generates random 4 character long alphanumeric string
+    req.body.verification_code = 'soft';
 
     // insert into DB here
-    
-    // send verification text (twilio api call)
+    res.json(await User.create(req.body));
 
-    res.status(200).end();
+    // send verification text (twilio api call)
   } else {
     res.status(404).end();
   }
-}
+};

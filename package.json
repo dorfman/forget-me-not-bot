@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/dorfman/forget-me-not-bot#readme",
   "devDependencies": {
-    "prettier": "2.0.2"
+    "prettier": "2.0.2",
+    "sequelize-cli": "^5.5.1"
   },
   "dependencies": {
     "axios": "^0.19.2",
