@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const Friend = sequelize.define(
     'Friend',
     {
-      user: {
+      user_id: {
         type: DataTypes.INTEGER,
       },
       name: {
