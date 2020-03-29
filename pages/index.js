@@ -56,7 +56,7 @@ function HomePage() {
             setStep(STEPS.SIGNEDUP);
           }}
         >
-          <Label for="code">Please type in the 4-digit code we sent you.</Label>
+          <Label htmlFor="code">Please type in the 4-digit code we sent you.</Label>
           <Input
             onChange={(e) => {
               setCode(e.target.value);
@@ -74,8 +74,9 @@ function HomePage() {
     case STEPS.SIGNEDUP: {
       onboarding = (
         <form method="POST" action="/api/friends">
-          <Label>Who do you want to remember?</Label>
+          <Label htmlFor="friends">Who do you want to remember?</Label>
           <textarea
+            name="friends"
             placeholder={'Jane Doe\nYefim Vedernikoff'}
             className="block w-1/2 border border-black mb-4"
           />
