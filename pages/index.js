@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useState} from 'react';
+import { useState } from 'react';
 
 const STEPS = {
   SIGNUP: 0,
@@ -21,14 +21,16 @@ function HomePage() {
           action="/api/signup"
           onSubmit={async (e) => {
             e.preventDefault();
-            const res = axios.post('/api/signup', {number});
+            const res = axios.post('/api/signup', { number });
             setStep(STEPS.VERIFY);
           }}
         >
           <label for="phonenumber">Where can we remind you?</label>
           <input
             placeholder="212-424-4242"
-            onChange={(e) => { setNumber(e.target.value); }}
+            onChange={(e) => {
+              setNumber(e.target.value);
+            }}
             value={number}
             id="phonenumber"
             type="tel"
@@ -46,13 +48,15 @@ function HomePage() {
           action="/api/verify"
           onSubmit={async (e) => {
             e.preventDefault();
-            const res = axios.post('/api/verify', {code});
+            const res = axios.post('/api/verify', { code });
             setStep(STEPS.SIGNEDUP);
           }}
         >
           <label for="code">Code</label>
           <input
-            onChange={(e) => { setCode(e.target.value); }}
+            onChange={(e) => {
+              setCode(e.target.value);
+            }}
             value={code}
             id="code"
             type="text"
