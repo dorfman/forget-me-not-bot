@@ -1,12 +1,12 @@
 .text {
   display: inline-block;
-	font-size: 20px;
+  font-size: 20px;
   max-width: 420px;
   word-wrap: break-word;
   margin-bottom: 4px;
   line-height: 24px;
   position: relative;
-	padding: 10px 20px;
+  padding: 10px 20px;
   border-radius: 25px;
 }
 
@@ -23,8 +23,8 @@
 }
 
 .bot {
-	background: #e5e5ea;
-	color: black;
+  background: #e5e5ea;
+  color: black;
 }
 
 .bot.bottom::before {
@@ -43,8 +43,8 @@
 }
 
 .human {
-	color: white; 
-	background: #0B93F6;
+  color: white;
+  background: #0B93F6;
   margin-left: auto;
   margin-right: 0;
 }
