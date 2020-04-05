@@ -1,6 +1,6 @@
 const TypingIndicator = () => (
   [
-    <style jsx>{`
+    <style key="styles" jsx>{`
       .typing-indicator {
         background-color: #E6E7ED;
         width: auto;
@@ -78,7 +78,7 @@ const TypingIndicator = () => (
       }
     `}>
     </style>,
-    <div class="typing-indicator">
+    <div key="element" className="typing-indicator">
       <span></span>
       <span></span>
       <span></span>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import Text from '../components/text';
 import TypingIndicator from '../components/typing-indicator';
@@ -18,10 +18,17 @@ const INTRO_TEXTS = [
 ];
 
 function Home() {
+  const textsEndRef = useRef(null);
   const [input, setInput] = useState('');
   const [typingIndicator, setTypingIndicator] = useState(false);
   const [texts, setTexts] = useState([]);
   const [step, setStep] = useState(STEPS.INTRO);
+
+  const scrollToBottom = () => {
+    textsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  useEffect(scrollToBottom, [texts, typingIndicator]);
 
   useEffect(() => {
     const sendIntroText = (i) => {
@@ -55,7 +62,7 @@ function Home() {
     <div className="mx-auto max-w-screen-lg py-20">
       <div className="flex flex-col border border-gray-500 rounded-md" style={{height: '600px', boxShadow: '0 18px 50px rgba(0, 0, 0, 0.52)'}}>
         <h1 style={{background: '#f0f0f0'}} className="border-b border-gray-400 text-center rounded-t-md py-4 text-xl">🌼 Forget Me Not Bot 🌼</h1>
-        <div className="flex-grow px-8 py-4 overflow-x-scroll">
+        <div className="flex-grow px-8 py-4 overflow-x-scroll scrolling-touch">
           {
             texts.map((text, i) => {
               let bottom = true;
@@ -74,6 +81,7 @@ function Home() {
           {
             typingIndicator && <TypingIndicator />
           }
+          <div ref={textsEndRef} />
         </div>
         <form
           style={{background: '#f0f0f0'}}
@@ -87,11 +95,68 @@ function Home() {
 
             setTexts((texts) => [...texts, {from: 'human', message: input}]);
             setInput('');
-            
-            // typing indicator
-            setTimeout(() => {
-              setTypingIndicator(true);
-            }, 500);
+
+            if (step === STEPS.NUMBER_INPUT) {
+              setTimeout(() => {
+                setTypingIndicator(true);
+
+                setTimeout(() => {
+                  setTypingIndicator(false);
+                  setTexts((texts) => [...texts, {from: 'bot', message: 'Got it. Thanks!'}]);
+
+                  setTimeout(() => {
+                    setTypingIndicator(true);
+
+                    setTimeout(() => {
+                      setTypingIndicator(false);
+                      setTexts((texts) => [...texts, {from: 'bot', message: 'Go check your phone - we\'ve sent you a four digit code. Can you tell us that code please?'}]);
+                      // update step
+                      setStep(STEPS.CODE_INPUT);
+                    }, 2200);
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            } else if (step === STEPS.CODE_INPUT) {
+              setTimeout(() => {
+                setTypingIndicator(true);
+
+                setTimeout(() => {
+                  setTypingIndicator(false);
+                  setTexts((texts) => [...texts, {from: 'bot', message: 'Thanks! You\'re verified!'}]);
+
+                  setTimeout(() => {
+                    setTypingIndicator(true);
+
+                    setTimeout(() => {
+                      setTypingIndicator(false);
+                      setTexts((texts) => [...texts, {from: 'bot', message: 'Now, who\'s on your list of people to remember?'}]);
+                      // update step
+                      setStep(STEPS.FRIEND_INPUT);
+                    }, 2200);
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            } else if (step === STEPS.FRIEND_INPUT) {
+              setTimeout(() => {
+                setTypingIndicator(true);
+
+                setTimeout(() => {
+                  setTypingIndicator(false);
+                  setTexts((texts) => [...texts, {from: 'bot', message: 'Sounds good. We\'ve added them to your list of friends. Check your actual texts for your first reminder!'}]);
+
+                  setTimeout(() => {
+                    setTypingIndicator(true);
+
+                    setTimeout(() => {
+                      setTypingIndicator(false);
+                      setTexts((texts) => [...texts, {from: 'bot', message: 'Bye for now 👋'}]);
+                    }, 2200);
+                  }, 1000);
+                }, 2500);
+              }, 1000);
+            }
+
+            // end of function
           }}
         >
           <input
