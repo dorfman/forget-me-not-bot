@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import axios from 'axios'
 
 import Text from '../components/text';
 import TypingIndicator from '../components/typing-indicator';
@@ -92,6 +93,9 @@ function Home() {
             e.preventDefault();
 
             // fire http request
+            if (step === STEPS.NUMBER_INPUT) {
+              axios.post('/api/signup', {number: input});
+            }
 
             setTexts((texts) => [...texts, {from: 'human', message: input}]);
             setInput('');
