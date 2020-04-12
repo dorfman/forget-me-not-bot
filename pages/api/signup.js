@@ -8,9 +8,14 @@ export default async (req, res) => {
         httpCode: 400,
         message: 'Must provide valid phone number including + and country code',
       });
+    } else if (!req.body.name && req.body.name.length) {
+      res.status(400).json({
+        httpCode: 400,
+        message: 'Must provide valid name',
+      });
     } else {
       // insert into DB here
-      User.create(req.body)
+      User.create({ phone: req.body.phone, name: req.body.name })
         .then((response) => {
           return twilio
             .requestVerification(req.body.phone) // send verification text (twilio api call)
