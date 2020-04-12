@@ -14,9 +14,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      verification_code: {
-        type: Sequelize.STRING,
-      },
       created_at: {
         type: Sequelize.DATE,
       },
@@ -24,9 +21,6 @@ module.exports = {
         type: Sequelize.DATE,
       },
       updated_at: {
-        type: Sequelize.DATE,
-      },
-      ver_code_created_at: {
         type: Sequelize.DATE,
       },
     });

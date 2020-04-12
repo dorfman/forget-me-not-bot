@@ -13,18 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      verification_code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       created_at: DataTypes.DATE,
       verified_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
-      ver_code_created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
-      },
     },
     {
       createdAt: 'created_at',
