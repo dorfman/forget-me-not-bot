@@ -1,5 +1,6 @@
-const { Friend, User } = require('../../models');
-const moment = require('moment');
+const { Friend, User, Prompt } = require('../../models');
+const twilio = require('../../lib/twilio');
+const _ = require('lodash');
 
 export default async (req, res) => {
   if (req.method === 'POST') {
@@ -14,6 +15,7 @@ export default async (req, res) => {
 
     console.log(user_id);
     let user = await User.findByPk(user_id);
+
     console.log(user);
     if (!user) {
       return res.status(404).json({
@@ -24,41 +26,43 @@ export default async (req, res) => {
     console.log(user_id);
     console.log();
 
-    let friends = await Friend.findAll({
-      where: {
-        user_id,
-        last_notified_at: {
-          gt: moment().startOf('day').format(),
-        },
-      },
-    });
+    const friends = await user.getFriends();
+    const prompts = await user.getPrompts();
 
     console.log(friends);
-    res.status(200).end();
+    console.log(prompts);
 
-    // if (user) {
-    //   let existingFriend = await Friend.findAll({
-    //     where: { user_id: user.id, name: req.body.name },
-    //   });
-    //
-    //   if (
-    //     existingFriend &&
-    //     existingFriend.length &&
-    //     existingFriend[0].name === req.body.name
-    //   ) {
-    //     return res.status(409).json({
-    //       httpCode: 409,
-    //       message: 'Friend with this name already exists',
-    //     });
-    //   } else {
-    //     res.json(await Friend.create(req.body));
-    //   }
-    // } else {
-    //   res.status(404).json({
-    //     httpCode: 404,
-    //     message: 'User not found',
-    //   });
-    // }
+    const friendIdToName = {};
+    const friendsHistogram = {};
+
+    for (const friend of friends) {
+      friendIdToName[friend.get('id')] = friend.get('name');
+      friendsHistogram[friend.get('id')] = 0;
+    }
+
+    for (const prompt of prompts) {
+      friendsHistogram[prompt.get('friendId')] += 1;
+    }
+
+    console.log(friendsHistogram);
+
+    const leastContacted = _.min(Object.values(friendsHistogram));
+    const leastContactedFriends = Object.entries(friendsHistogram)
+                                        .filter((record) => record[1] === leastContacted)
+                                        .map((record) => record[0]);
+    const randomFriend = _.sample(leastContactedFriends);
+
+    console.log('leastContactedFriends', JSON.stringify(leastContactedFriends));
+    console.log('randomFriend', randomFriend);
+
+    const prompt = await Prompt.create({userId: user_id, friendId: randomFriend});
+    const name = friendIdToName[randomFriend];
+
+    const text = `Hello, have you checked in with ${name} recently?`;
+
+    await twilio.prompt(user.get('phone'), text);
+
+    res.status(200).end();
   } else {
     res.status(404).end();
   }

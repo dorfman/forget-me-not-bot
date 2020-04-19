@@ -24,6 +24,8 @@ module.exports = (sequelize, DataTypes) => {
   );
   User.associate = function (models) {
     // associations can be defined here
+    User.hasMany(models.Friend, {foreignKey: 'user_id'});
+    User.hasMany(models.Prompt, {foreignKey: 'userId'});
   };
   return User;
 };
