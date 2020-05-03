@@ -36,6 +36,29 @@ export default async (req, res) => {
     }
   } else if (req.method === 'GET') {
     res.json(await Friend.findAll());
+  } else if (req.method === 'DELETE') {
+    let user_id = req.body.user_id;
+    let user = await User.findByPk(user_id);
+
+    if (user) {
+      let response = await Friend.destroy({
+        where: { user_id, id: req.body.id || req.body.friend.id },
+      });
+
+      if (response) {
+        res.status(200).end();
+      } else {
+        res.status(404).json({
+          httpCode: 404,
+          message: 'Friend not found',
+        });
+      }
+    } else {
+      res.status(404).json({
+        httpCode: 404,
+        message: 'User not found',
+      });
+    }
   } else {
     res.status(404).end();
   }
