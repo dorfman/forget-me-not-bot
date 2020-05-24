@@ -1,9 +1,10 @@
 const { Friend, User } = require('../../models');
+const { withIronSession } = require('next-iron-session');
 
-export default async (req, res) => {
+async function handler(req, res) {
   if (req.method === 'POST') {
-    let user_id = req.body.user_id;
-    let user = await User.findByPk(user_id);
+    const phone = req.session.get('user').phone;
+    const user = await User.findOne({ phone });
 
     if (user) {
       let existingFriend = await Friend.findAll({
@@ -33,4 +34,12 @@ export default async (req, res) => {
   } else {
     res.status(404).end();
   }
-};
+}
+
+export default withIronSession(handler, {
+  cookieName: '__forget',
+  password: process.env.SECRET,
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+  },
+});
