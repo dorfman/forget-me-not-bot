@@ -1,29 +1,40 @@
 const { User } = require('../../models');
 const twilio = require('../../lib/twilio');
+const { withIronSession } = require('next-iron-session');
 
-export default (req, res) => {
+async function handler(req, res) {
   if (req.method === 'POST') {
-    // verify the code
-    return twilio
-      .verify(req.body.phone, req.body.code)
-      .then((response) =>
-        User.update(
-          { verified_at: new Date().toISOString() },
-          {
-            where: { phone: req.body.phone },
-          }
-        )
+    const { phone, code } = req.body;
+
+    try {
+      // verify the code
+      await twilio.verify(phone, code);
+
+      // verify the user
+      await User.update(
+        { verified_at: new Date().toISOString() },
+        { where: { phone } }
       )
-      .then((response) => {
-        res.status(200).end();
-      })
-      .catch((error) => {
-        res.status(400).json({
-          httpCode: 400,
-          message: error.message,
-        });
+
+      // Log the user in
+      req.session.set('user', { phone });
+      await req.session.save();
+      res.status(200).end();
+    } catch (error) {
+      res.status(400).json({
+        httpCode: 400,
+        message: error.message,
       });
+    }
   } else {
     res.status(404).end();
   }
-};
+}
+
+export default withIronSession(handler, {
+  cookieName: '__forget',
+  password: process.env.SECRET,
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+  },
+});
