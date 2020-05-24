@@ -3,9 +3,7 @@ const twilio = require('../../lib/twilio');
 
 export default async (req, res) => {
   if (req.method === 'POST') {
-    const { phone } = req.body;
-
-    if (!phone || phone.charAt(0) !== '+') {
+    if (!req.body.phone || req.body.phone.charAt(0) !== '+') {
       res.status(400).json({
         httpCode: 400,
         message: 'Must provide valid phone number including + and country code',
@@ -17,10 +15,10 @@ export default async (req, res) => {
       });
     } else {
       // insert into DB here
-      User.create({ phone: phone, name: req.body.name })
+      User.create({ phone: req.body.phone, name: req.body.name })
         .then((response) => {
           return twilio
-            .requestVerification(phone) // send verification text (twilio api call)
+            .requestVerification(req.body.phone) // send verification text (twilio api call)
             .then(() => Promise.resolve(response));
         })
         .then((response) => res.json(response))
