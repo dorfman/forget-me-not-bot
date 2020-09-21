@@ -3,31 +3,27 @@ const twilio = require('../../lib/twilio');
 
 export default async (req, res) => {
   if (req.method === 'POST') {
-    if (!req.body.phone || req.body.phone.charAt(0) !== '+') {
+    const { phone } = req.body;
+    const normalizedPhone = (phone || '').trim().length && (await twilio.lookup(phone));
+
+    if (!normalizedPhone) {
       res.status(400).json({
         httpCode: 400,
         message: 'Must provide valid phone number including + and country code',
       });
-    } else if (!req.body.name && req.body.name.length) {
-      res.status(400).json({
-        httpCode: 400,
-        message: 'Must provide valid name',
+      return;
+    }
+
+    try {
+      const user = await User.create({ phone: normalizedPhone });
+      await twilio.requestVerification(normalizedPhone);
+
+      res.json(user);
+    } catch (err) {
+      res.status(409).json({
+        httpCode: 409,
+        message: 'User with this phone already exists',
       });
-    } else {
-      // insert into DB here
-      User.create({ phone: req.body.phone, name: req.body.name })
-        .then((response) => {
-          return twilio
-            .requestVerification(req.body.phone) // send verification text (twilio api call)
-            .then(() => Promise.resolve(response));
-        })
-        .then((response) => res.json(response))
-        .catch((err) => {
-          res.status(409).json({
-            httpCode: 409,
-            message: 'User with this phone already exists',
-          });
-        });
     }
   } else {
     res.status(404).end();
